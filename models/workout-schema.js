@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const { stringify } = require("querystring");
 const Schema = mongoose.Schema;
 
-const workoutTracker = newSchema(
+const workoutTracker = new Schema(
     {
         day: {
             type: Date,
             default: () => new Date()
         },
-        exercise: [
+        exercises: [
             {
                 name: {
                     type: String,
@@ -49,26 +49,26 @@ const workoutTracker = newSchema(
     }
 );
 
-workoutTracker.virtual("fullDuration").get(function () {
+workoutTracker.virtual("totalDuration").get(function () {
     console.log(this);
-    if (typeof this.exercise === 'undefined') {
+    if (typeof this.exercises === 'undefined') {
         return 0;
     }
-    return this.exercise.reduce((total, exercise) => {
-        return total + exercise.duration;
+    return this.exercises.reduce((total, exercises) => {
+        return total + exercises.duration;
     }, 0)
 });
 
 workoutTracker.virtual("totalDistance").get(function () {
     console.log(this);
-    if (typeof this.exercise === 'undefined') {
+    if (typeof this.exercises === 'undefined') {
         return 0;
     }
-    return this.exercise.reduce((total, exercise) => {
-        return total + exercise.distance;
+    return this.exercises.reduce((total, exercises) => {
+        return total + exercises.distance;
     }, 0)
 });
 
-const Workout = mongoose.model("Workout", workoutSchema);
+const Workout = mongoose.model("Workout", workoutTracker);
 
 module.exports = Workout
